@@ -18,9 +18,12 @@ Stackware.prototype._stack = undefined;
  * @return {Object}   this  for chaining
  */
 Stackware.prototype.use = function(fn) {
-  if (typeof fn !== 'function')
+  if (typeof fn === 'function')
+    this._stack.push(fn);
+  else if (fn && typeof fn.handle === 'function')
+    this._stack.push(fn.handle);
+  else
     throw new Error('fn is not a function');
-  this._stack.push(fn);
   return this;
 };
 
