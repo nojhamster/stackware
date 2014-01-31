@@ -4,7 +4,9 @@ stackware
 Stackware is a basic connect-style middleware handler for **node.js**, used for pushing objects through a list of functions, modifying them and handling errors.
 
 ## Installation
- _will come when published on npm_
+ ```
+npm install stackware
+```
 
 ## Usage
 
