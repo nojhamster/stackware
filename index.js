@@ -31,7 +31,7 @@ Stackware.prototype.use = function(fn) {
  * Run the middleware stack
  * @return {Object} this  for chaining
  */
-Stackware.prototype.handle = function() {
+Stackware.prototype.process = function() {
   var stack = this._stack;
   var args  = Array.prototype.slice.call(arguments, 0);
   var index = 0;
