@@ -22,7 +22,7 @@ npm install stackware
     obj2.bar = 'foo';
     // stop here
   });
-  sw.handle(obj1, obj2);
+  sw.process(obj1, obj2);
 ```
 
 ## Documentation
@@ -39,26 +39,34 @@ var sw        = new Stackware();
 ### Methods
 
 #### use(function)
-Add a middleware to the stack. The function is called with the same arguments given to `handle` (see below), plus a callback function which can take an error.
+Add a middleware to the stack. It can be either a function or an object providing a `handle` function. It will be called with the same arguments given to `process` (see below), plus a callback function which can take an error.
 ```javascript
-  sw.use(function middleware1(obj1, obj2, next) {
-    obj1.foo = 'bar';
-    next();
-  });
-  sw.handle(obj1, obj2);
+ function Middleware() {}
+ Middleware.prototype.handle = function (obj1, obj2, next) { next(); };
+ 
+ // Object with handle function
+ sw.use(new Middleware());
+ 
+ // Function
+ sw.use(function (obj1, obj2, next) {
+   obj1.foo = 'bar';
+   next();
+ });
+ 
+ sw.process(obj1, obj2);
 ```
 When the callback is called with an error, further middlewares will be skipped until we reach an error handler. It's basically a middleware with an `error` argument prepended to the others.
 
 ```javascript
-  sw.use(function middleware1(obj, next) {
-    next(new Error('Something happened'));
-  });
-  sw.use(function errorHandler(err, obj, next) {
-    console.log(err);
-  });
-  sw.handle(obj);
+ sw.use(function middleware1(obj, next) {
+   next(new Error('Something happened'));
+ });
+ sw.use(function errorHandler(err, obj, next) {
+   console.log(err);
+ });
+ sw.process(obj);
 ```
 
-#### handle(obj1, obj2, ...)
+#### process(obj1, obj2, ...)
 Push any number of objects through the middlewares.  
 **NB**: only variables passed by reference can be changed inside the middlewares (i.e. objects, arrays).
